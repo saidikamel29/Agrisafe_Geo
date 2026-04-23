@@ -6,8 +6,8 @@
     <title>Agrisafe Geo - Services</title>
 
     <!-- CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/cssservise.css') }}">
-    
+    <link rel="stylesheet" href="cssservise.css">
+
     <!-- Leaflet -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet-draw/dist/leaflet.draw.css">
@@ -20,10 +20,10 @@
     <div class="logo">Agrisafe Geo 🌱</div>
 
     <nav>
-         <a href="{{ url_for('aboutus') }}" class="nav-btn">About Us</a>
-            <a href="{{ url_for('service') }}" class="nav-btn active">Service</a>
-            <a href="{{ url_for('service') }}" class="nav-btn">Media</a>
-            <a href="{{ url_for('conect') }}" class="nav-btn active">Connect With Us</a>
+        <a href="about.html" class="nav-btn">About Us</a>
+            <a href="service.html" class="nav-btn active">Service</a>
+            <a href="media.html" class="nav-btn">Media</a>
+            <a href="conect.html" class="nav-btn ">Connect With Us</a>
     </nav>
 </header>
 
@@ -82,7 +82,7 @@
     <select id="type">
         <option value="">-- Choisir type --</option>
         <option value="plantation">Plantation</option>
-        <option value="culture_herbacées">culture herbacées</option>
+        <option value="culture_herbacees">culture herbacées</option>
         <option value="culture_permanentes">culture permanentes</option>
     </select>
 
