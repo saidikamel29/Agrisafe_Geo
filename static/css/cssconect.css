@@ -1,0 +1,156 @@
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* Navbar */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 60px;
+    background: #0b3d2e;
+    color: white;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+nav {
+    display: flex;
+    gap: 25px;
+}
+
+.nav-btn {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+/* CONNECT SECTION */
+.connect {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 80px 100px;
+}
+
+/* LEFT */
+.left {
+    max-width: 500px;
+}
+
+.left h1 {
+    font-size: 48px;
+    margin-bottom: 30px;
+}
+
+.info {
+    margin-bottom: 25px;
+}
+
+.info h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.info p {
+    font-size: 16px;
+    color: #333;
+}
+
+/* RIGHT IMAGE */
+.right img {
+    width: 450px;
+    border-radius: 12px;
+}
+
+/* APPS SECTION */
+.apps {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.apps h2 {
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.apps p {
+    color: gray;
+    margin-bottom: 30px;
+}
+
+.cards {
+    display: flex;
+    justify-content: center;
+}
+
+.card {
+    background: #0b3d2e;
+    color: white;
+    padding: 30px;
+    border-radius: 10px;
+    width: 250px;
+}
+
+.download-btn {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 20px;
+    background: white;
+    color: #0b3d2e;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+}
+/* POPUP */
+.popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    justify-content: center;
+    align-items: center;
+}
+
+.popup-content {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    text-align: center;
+    width: 300px;
+    position: relative;
+    animation: fadeIn 0.4s ease;
+}
+
+.popup-content h2 {
+    margin-bottom: 10px;
+}
+
+#closePopup {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 22px;
+    cursor: pointer;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}

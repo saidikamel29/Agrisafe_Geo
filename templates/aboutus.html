@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Agrisafe Geo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/cssaboutus.css') }}">
+    
+
+</head>
+<body>
+
+<!-- Navbar -->
+<header class="navbar">
+    <div class="logo">Agrisafe Geo 🌱</div>
+
+    <nav>
+            <a href="{{ url_for('aboutus') }}" class="nav-btn active">About Us</a>
+            <a href="{{ url_for('service') }}" class="nav-btn">Service</a>
+            <a href="{{ url_for('service') }}" class="nav-btn">Media</a>
+            <a href="{{ url_for('conect') }}" class="nav-btn">Connect With Us</a>
+    </nav>
+</header>
+
+<!-- JOURNEY -->
+<section class="journey">
+    <h1>🌍 Agrisafe Geo Journey</h1>
+    <p class="date">📅 Since 2026</p>
+
+    <p class="text">
+        Agrisafe Geo helps farmers manage risks, predict diseases, 
+        and improve agricultural decisions using smart technologies.
+    </p>
+</section>
+
+<!-- PARTNERS -->
+<section class="partners">
+    <h1>🤝 Our Partners</h1>
+
+    <div class="partner-boxes">
+        <div class="partner">🌿 INPV</div>
+        <div class="partner">🏢 CRMA</div>
+        <div class="partner">🧪 Produits phytosanitaires</div>
+    </div>
+</section>
+
+<!-- TEAM -->
+<section class="team">
+    <h1>👩‍💻 Our Team</h1>
+
+    <div class="team-members">
+    <div class="member">
+        <div class="avatar">🧕</div>
+            <h3>seddiki khaoula</h3>
+            <p>geomatique</p>
+        </div>
+
+        <div class="member">
+            <div class="avatar">👩</div>
+            <h3>rouab meriem houda</h3>
+            <p>téléditection</p>
+        </div>
+
+    </div>
+</section>
+<!-- JS -->
+<script >
+    // Animation عند النزول
+const sections = document.querySelectorAll("section");
+
+const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.style.opacity = "1";
+            entry.target.style.transform = "translateY(0)";
+        }
+    });
+}, {
+    threshold: 0.3
+});
+
+sections.forEach(sec => {
+    sec.style.opacity = "0";
+    sec.style.transform = "translateY(40px)";
+    sec.style.transition = "0.6s ease";
+    observer.observe(sec);
+});
+
+</script>
+</body>
+</html>

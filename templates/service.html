@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agrisafe Geo - Services</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/cssservise.css') }}">
+    
+    <!-- Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-draw/dist/leaflet.draw.css">
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<header class="navbar">
+    <div class="logo">Agrisafe Geo 🌱</div>
+
+    <nav>
+         <a href="{{ url_for('aboutus') }}" class="nav-btn">About Us</a>
+            <a href="{{ url_for('service') }}" class="nav-btn active">Service</a>
+            <a href="{{ url_for('service') }}" class="nav-btn">Media</a>
+            <a href="{{ url_for('conect') }}" class="nav-btn active">Connect With Us</a>
+    </nav>
+</header>
+
+<!-- SERVICES -->
+<section class="services">
+
+    <h1>Our Services</h1>
+
+    <div class="service-boxes">
+
+        <div class="box" id="registerBox">
+            📄 Insurance Registration
+        </div>
+
+        <div class="box" id="reportBox">
+            🚨 Damage Report
+        </div>
+
+    </div>
+
+</section>
+
+<!-- 🔵 REGISTER MODAL -->
+<div id="registerModal" class="modal">
+    <div class="modal-content">
+
+        <span class="close" onclick="closeRegister()">&times;</span>
+
+        <h2>Insurance Registration</h2>
+
+        <!-- STEPS -->
+        <div class="steps">
+            <div class="step-box" onclick="showSection('farmer')">👤 Farmer</div>
+            <div class="step-box" onclick="showSection('warranty')">🌾 Field</div>
+            <div class="step-box" onclick="extraAction()">⚙️ drawing field boundaries</div>
+        </div>
+
+        <!-- FARMER -->
+        <div id="farmer" class="form-section">
+            <h3>Farmer Information</h3>
+            <input type="text" placeholder="Full Name">
+            <input type="text" placeholder="National ID">
+            <input type="date" placeholder="date of birth">
+            <input type="text" placeholder="place of birth">
+            <input type="text" placeholder="id culture">
+            <button>Send</button>
+        </div>
+
+        <!-- FIELD -->
+        <div id="warranty" class="form-section">
+            <h3>warranty Information</h3>
+            <div class="box">
+    <h3>Choisissez votre activité</h3>
+
+    <!-- Type -->
+    <select id="type">
+        <option value="">-- Choisir type --</option>
+        <option value="plantation">Plantation</option>
+        <option value="culture_herbacées">culture herbacées</option>
+        <option value="culture_permanentes">culture permanentes</option>
+    </select>
+
+    <!-- Category -->
+    <select id="category" disabled>
+        <option value="">-- Choisir catégorie --</option>
+    </select>
+
+    <!-- Choix final -->
+    <select id="choix" disabled>
+        <option value="">-- Choisir --</option>
+    </select>
+    <!-- Result -->
+    <div id="result"></div>
+</div>
+
+<!-- 🗺️ FULLSCREEN MAP -->
+<div id="mapModal" class="map-modal">
+
+    <button class="close-map" onclick="closeMap()">X</button>
+
+    <div id="map"></div>
+
+    <button class="save-btn" onclick="saveField()">OK</button>
+
+</div>
+
+<!-- 🔴 REPORT MODAL -->
+<div id="reportModal" class="modal">
+    <div class="modal-content">
+
+        <span class="close" onclick="closeReport()">&times;</span>
+
+        <h2>Report Issue</h2>
+
+        <input type="file">
+        <input type="date">
+        <textarea placeholder="Describe problem"></textarea>
+
+        <button>Send</button>
+
+    </div>
+</div>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-draw/dist/leaflet.draw.js"></script>
+
+<!-- JS -->
+<script>
+
+let map;
+let drawnItems;
+
+// OPEN MODALS
+document.getElementById("registerBox").onclick = function () {
+    document.getElementById("registerModal").style.display = "block";
+}
+
+document.getElementById("reportBox").onclick = function () {
+    document.getElementById("reportModal").style.display = "block";
+}
+
+// CLOSE MODALS
+function closeRegister() {
+    document.getElementById("registerModal").style.display = "none";
+}
+
+function closeReport() {
+    document.getElementById("reportModal").style.display = "none";
+}
+
+// SWITCH SECTIONS
+function showSection(id) {
+
+    document.querySelectorAll(".form-section").forEach(sec => {
+        sec.style.display = "none";
+    });
+
+    document.getElementById(id).style.display = "block";
+}
+
+// NEXT STEP → OPEN MAP
+function extraAction() {
+
+    document.getElementById("registerModal").style.display = "none";
+    document.getElementById("mapModal").style.display = "block";
+
+    if (!map) {
+
+        map = L.map('map').setView([35.7, -0.6], 10);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: 'Map'
+        }).addTo(map);
+
+        drawnItems = new L.FeatureGroup();
+        map.addLayer(drawnItems);
+
+        let drawControl = new L.Control.Draw({
+            draw: {
+                polygon: true,
+                rectangle: true
+            },
+            edit: {
+                featureGroup: drawnItems
+            }
+        });
+
+        map.addControl(drawControl);
+
+        map.on('draw:created', function (e) {
+            let layer = e.layer;
+            drawnItems.addLayer(layer);
+
+            console.log("Field coords:", layer.getLatLngs());
+        });
+    }
+
+    setTimeout(() => {
+        map.invalidateSize();
+    }, 200);
+}
+
+// CLOSE MAP
+function closeMap() {
+    document.getElementById("mapModal").style.display = "none";
+}
+
+// SAVE FIELD
+function saveField() {
+    alert("Field saved successfully!");
+    closeMap();
+}
+
+// OUTSIDE CLICK
+window.onclick = function(event) {
+
+    let reg = document.getElementById("registerModal");
+    let rep = document.getElementById("reportModal");
+
+    if (event.target == reg) reg.style.display = "none";
+    if (event.target == rep) rep.style.display = "none";
+}
+const data = {
+    plantation: {
+       olivier: {
+            olivier_en_masse: {
+                text: "Olivier en masse",
+                info: "Superficie: 1ha minimum - Besoin d'irrigation moyenne"
+            },
+            olivier_isoles: {
+                text: "Olivier isolés",
+                info: "Superficie: 2ha - Climat chaud nécessaire"
+            },
+            olivier_en_rapport: {
+                text: "Olivier en rapport",
+                info: "Superficie: 2ha - Climat chaud nécessaire"
+            }
+        },
+        agrumes: {
+            orangers: {
+                text: "Orangers",
+                info: "Superficie: 5ha - Culture saisonnière"
+            },
+            clementiniers: {
+                text: "Clémentiniers",
+                info: "Superficie: 5ha - Culture saisonnière"
+            },
+            mandariniers: {
+                text: "Mandariniers",
+                info: "Superficie: 5ha - Culture saisonnière"
+            },
+            citronniers: {
+                text: "Citronniers",
+                info: "Superficie: 5ha - Culture saisonnière"
+            },
+            pomelos: {
+                text: "Pomelos",
+                info: "Superficie: 5ha - Culture saisonnière"
+            }
+        },
+        especes_a_noyaux_et_a_pepins: {
+            pommiers: {
+                text: "Pommiers",
+                info: "Superficie: 3ha - Climat tempéré"
+            },
+            poiriers: {
+                text: "Poiriers",
+                info: "Superficie: 3ha - Climat tempéré"
+            },
+            pechers: {
+                text: "Pêchers",
+                info: "Superficie: 2ha - Climat doux"
+            },
+            abricotiers: {
+                text: "Abricotiers",
+                info: "Superficie: 2ha - Climat chaud"
+            }
+        },     
+    },
+    culture_herbacees: {
+        cereales_dhiver: {
+            ble: {
+                text: "Blé",
+                info: "Superficie: 10ha - Culture saisonnière"
+            },
+            orge: {
+                text: "Orge",
+                info: "Superficie: 8ha - Résistant à la sécheresse"
+            },
+           tendre: {
+                text: "tendre",
+                info: "Superficie: 8ha - Résistant à la sécheresse"
+            },
+           ble_dure: {
+                text: "ble_dur",
+                info: "Superficie: 8ha - Résistant à la sécheresse"
+            },
+            avoine: {
+                text: "avoine",
+                info: "Superficie: 8ha - Résistant à la sécheresse"
+            },
+            triticale: {
+                text: "triticale",
+                info: "Superficie: 8ha - Résistant à la sécheresse"
+            },
+
+        },
+        legumineuses: {
+            pois_chiche: {
+                text: "Pois chiche",
+                info: "Superficie: 5ha - Besoin modéré en eau"
+            },
+            lentilles: {
+                text: "Lentilles",
+                info: "Superficie: 4ha - Climat sec"
+            },
+             freves_feveroles: {
+                text: "reves_feveroles",
+                info: "Superficie: 4ha - Climat sec"
+            },
+             pois_secs: {
+                text: "pois_secs",
+                info: "Superficie: 4ha - Climat sec"
+            },
+             haricots_secs: {
+                text: "Lentilles",
+                info: "Superficie: 4ha - Climat sec"
+            },
+             gesses_et_gurfalas: {
+                text: "gesses_et_gurfalas",
+                info: "Superficie: 4ha - Climat sec"
+            },
+        },
+        cereales_dete: {
+            mais: {
+                text: "mais",
+                info: "Superficie: 5ha - Besoin modéré en eau"
+            },
+            sorgho: {
+                text: "sorgo",
+                info: "Superficie: 4ha - Climat sec"
+            },
+        },
+        cultures_industrielles:{
+            tomates: {
+                text: "tomates",
+                info: "Superficie: 5ha - Besoin modéré en eau"
+            },
+            tabac: {
+                text: "tabac",
+                info: "Superficie: 4ha - Climat sec"
+            },
+            arachides: {
+                text: "arachides",
+                info: "Superficie: 4ha - Climat sec"
+            },
+            autre: {
+                text: "autre",
+                info: "Superficie: 4ha - Climat sec"
+            },
+         },
+    },
+    culture_permanentes: {
+        vigne: {
+            raisin_table: {
+                text: "Raisin de table",
+                info: "Superficie: 3ha - Climat méditerranéen"
+            },
+            raisin_vin: {
+                text: "Raisin pour vin",
+                info: "Superficie: 4ha - Culture durable"
+            },
+        },
+        prairies: {
+            prairies_naturelles: {
+                text: "prairies_naturelles",
+                info: "Superficie: 5ha - Climat saharien"
+            },
+        },
+    },
+};
+
+const type = document.getElementById("type");
+const category = document.getElementById("category");
+const choix = document.getElementById("choix");
+const result = document.getElementById("result");
+
+type.addEventListener("change", () => {
+    category.innerHTML = "<option>-- Choisir catégorie --</option>";
+    choix.innerHTML = "<option>-- Choisir --</option>";
+    choix.disabled = true;
+
+    if (type.value) {
+        category.disabled = false;
+
+        for (let cat in data[type.value]) {
+            category.innerHTML += `<option value="${cat}">${cat}</option>`;
+        }
+    }
+});
+
+category.addEventListener("change", () => {
+    choix.innerHTML = "<option>-- Choisir --</option>";
+
+    if (category.value) {
+        choix.disabled = false;
+
+        let items = data[type.value][category.value];
+        for (let item in items) {
+            choix.innerHTML += `<option value="${item}">${items[item].text}</option>`;
+        }
+    }
+});
+
+choix.addEventListener("change", () => {
+    if (choix.value) {
+        let info = data[type.value][category.value][choix.value].info;
+
+        result.innerHTML = `
+            <h4>اختيارك:</h4>
+            <p>${choix.options[choix.selectedIndex].text}</p>
+            <p>${info}</p>
+        `;
+    }
+});
+</script>
+
+</body>
+</html>

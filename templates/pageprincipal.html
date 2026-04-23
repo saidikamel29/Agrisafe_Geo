@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>agrisaf geo</title>
+
+    <!-- Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <!-- CSS file -->
+     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/csspagepr.css') }}">
+    
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<header>
+    <div class="logo">
+        <i class="fa-solid fa-leaf"></i>
+        Agrisaf geo
+        <i class="fa-solid fa-seedling"></i>
+    </div>
+
+    <nav>
+             <a href="{{ url_for('aboutus') }}" class="nav-btn">About Us</a>
+            <a href="{{ url_for('aboutus') }}" class="nav-btn">Service</a>
+            <a href="{{ url_for('media') }}" class="nav-btn">Media</a>
+            <a href="{{ url_for('conect') }}" class="nav-btn ">Connect With Us</a>
+    </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-bg"></div>
+
+    <div class="hero-content">
+        <h1>From Space to Field<br>Smart Agricultural Insurance</h1>
+        <p>Using satellite data to monitor crops, assess risks, and provide 
+            reliable agricultural insurance.</p>
+    </div>
+</section>
+
+<!-- INFO -->
+<section class="info">
+    <h2>Agricultural Insurance</h2>
+
+    <div class="cards">
+
+        <div class="card" onclick="openPanel('definition')">
+            <h3>Definition</h3>
+            <p>Click to view</p>
+        </div>
+
+        <div class="card" onclick="openPanel('importance')">
+            <h3>Importance</h3>
+            <p>Click to view</p>
+        </div>
+
+    </div>
+</section>
+
+<!-- SIDE PANEL -->
+<div class="panel" id="panel">
+    <span class="close" onclick="closePanel()">×</span>
+
+    <div id="content"></div>
+</div>
+
+<!-- CONTACT -->
+<div class="contact">
+
+    <h2>Contact Us</h2>
+
+    <div class="contact-block">
+        <h4><i class="fa-solid fa-envelope"></i> Email</h4>
+        <p>agrisafegeo@gmail.com</p>
+    </div>
+
+    <div class="contact-block">
+        <h4><i class="fa-brands fa-facebook"></i> Facebook</h4>
+        <p>agrisaf geo</p>
+    </div>
+
+    <div class="contact-block">
+        <h4><i class="fa-brands fa-linkedin"></i> LinkedIn</h4>
+        <p>agrisaf geo company</p>
+    </div>
+
+</div>
+
+<!-- JS -->
+<script>
+function openPanel(type) {
+    let text = "";
+
+    if(type === "definition") {
+        text = `
+        <h2>Definition</h2>
+        <p>Agricultural insurance protects farmers from financial losses caused by climate risks, diseases, and natural disasters.</p>
+        `;
+    }
+
+    if(type === "importance") {
+        text = `
+        <h2>Importance</h2>
+        <p>It stabilizes farmers' income, reduces risks, and supports agricultural investment.</p>
+        `;
+    }
+
+    document.getElementById("content").innerHTML = text;
+    document.getElementById("panel").classList.add("active");
+}
+
+function closePanel() {
+    document.getElementById("panel").classList.remove("active");
+}
+</script>
+
+</body>
+</html>

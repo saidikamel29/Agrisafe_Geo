@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agrisafe Geo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/cssconect.css') }}">
+    
+</head>
+<body>
+
+    <!-- Navbar -->
+    <header class="navbar">
+        <div class="logo">Agrisafe Geo 🌱</div>
+
+        <nav>
+           <a href="{{ url_for('aboutus') }}" class="nav-btn">About Us</a>
+            <a href="{{ url_for('service') }}" class="nav-btn">Service</a>
+          
+            <a href="{{ url_for('conect') }}" class="nav-btn active">Connect With Us</a>
+        </nav>
+    </header>
+
+    <!-- Connect Section -->
+    <section class="connect">
+        <div class="left">
+            <h1>Let’s Connect</h1>
+
+            <div class="info">
+                <h3>📞 Phone</h3>
+                <p>+213 00 00 00 00</p>
+            </div>
+
+            <div class="info">
+                <h3>✉️ Email</h3>
+                <p>
+                    agrisafgeo@gmail.com <br>
+                </p>
+            </div>
+        </div>
+
+        <div class="right">
+            <img src="map.jfif" alt="map">
+        </div>
+    </section>
+
+    <!-- Apps Section -->
+    <section class="apps">
+        <h2>Experience Our Mobile Apps</h2>
+        <p>Download our smart agricultural tools</p>
+
+        <div class="cards">
+
+            <div class="card">
+                <h3>Crop Insurance</h3>
+                <a href="#" class="download-btn">Download App</a>
+            </div>
+
+            
+
+        </div>
+    </section>
+    <!-- POPUP -->
+<div id="popup" class="popup">
+    <div class="popup-content">
+        <span id="closePopup">&times;</span>
+        <h2>🚀 Coming Soon</h2>
+        <p>Our mobile app will be available soon. Stay tuned!</p>
+    </div>
+</div>
+    <!-- JS -->
+<script>
+// عند الضغط على روابط Navbar يعمل scroll ناعم
+document.querySelectorAll('.nav-btn').forEach(link => {
+    link.addEventListener('click', function(e) {
+        e.preventDefault();
+
+        const href = this.getAttribute('href');
+
+        // انتقال عادي للصفحات
+        window.location.href = href;
+    });
+});
+
+
+// زر تحميل التطبيق
+document.querySelectorAll('.download-btn').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+        e.preventDefault();
+
+        alert("🚀 App will be available soon!");
+    });
+});
+
+
+// Animation عند النزول
+const elements = document.querySelectorAll('.left, .right, .card');
+
+const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.style.opacity = "1";
+            entry.target.style.transform = "translateY(0)";
+        }
+    });
+}, {
+    threshold: 0.3
+});
+
+elements.forEach(el => {
+    el.style.opacity = "0";
+    el.style.transform = "translateY(50px)";
+    el.style.transition = "0.6s ease";
+    observer.observe(el);
+});
+const popup = document.getElementById("popup");
+const closePopup = document.getElementById("closePopup");
+
+document.querySelectorAll('.download-btn').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        popup.style.display = "flex";
+    });
+});
+
+// إغلاق
+closePopup.addEventListener('click', () => {
+    popup.style.display = "none";
+});
+
+// إغلاق عند الضغط خارج الصندوق
+window.addEventListener('click', (e) => {
+    if (e.target === popup) {
+        popup.style.display = "none";
+    }
+});
+
+// تأثير Hover بسيط للNavbar
+const navLinks = document.querySelectorAll('.nav-btn');
+
+navLinks.forEach(link => {
+    link.addEventListener('mouseover', () => {
+        link.style.color = "#a8ffdb";
+    });
+
+    link.addEventListener('mouseout', () => {
+        link.style.color = "white";
+    });
+});
+</script>
+</body>
+</html>
