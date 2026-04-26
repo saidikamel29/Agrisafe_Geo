@@ -17,10 +17,16 @@ def aboutus():
 
     return render_template('aboutus.html')
 
+@app.route('/media')
+def media():
+
+    return render_template('media.html')
+
+
 @app.route('/service')
 def service():
 
-    return render_template('service.html')
+    return render_template('service.html') 
 
 @app.route('/acount/<name>')
 def profile(name):

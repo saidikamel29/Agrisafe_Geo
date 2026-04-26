@@ -1,0 +1,115 @@
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* Navbar */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 60px;
+    background: #0b3d2e;
+    color: white;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+nav {
+    display: flex;
+    gap: 25px;
+}
+
+.nav-btn {
+    color: white;
+    text-decoration: none;
+    padding-bottom: 5px;
+    transition: all 0.3s ease;
+}
+
+.nav-btn:hover {
+    color: #d1e7dd;
+}
+
+.nav-btn.active {
+    border-bottom: 2px solid white;
+    font-weight: bold;
+}
+
+/* Gallery Styles */
+.media-item {
+    transition: all 0.4s ease-in-out;
+}
+
+.gallery-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 15px;
+    cursor: pointer;
+}
+
+.gallery-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(11, 61, 46, 0.2) !important;
+}
+
+.gallery-img {
+    height: 250px;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.gallery-card:hover .gallery-img {
+    transform: scale(1.08); /* تكبير خفيف للصورة عند التمرير */
+}
+
+/* أزرار الفلترة */
+.nav-pills .nav-link {
+    color: #0b3d2e;
+    font-weight: bold;
+    border-radius: 30px;
+    padding: 10px 30px;
+    background-color: white;
+    transition: all 0.3s ease;
+}
+
+.nav-pills .nav-link:hover {
+    background-color: #e8f5e9;
+    color: #0b3d2e;
+}
+
+.nav-pills .nav-link.active {
+    background-color: #0b3d2e !important;
+    color: white !important;
+}
+
+/* Video Overlay */
+.video-card .play-btn-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    width: 65px;
+    height: 65px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    font-size: 28px;
+    padding-left: 5px; /* لجعل المثلث في المنتصف تماماً */
+    transition: all 0.3s ease;
+    backdrop-filter: blur(2px);
+}
+
+.video-card:hover .play-btn-overlay {
+    background-color: #28a745;
+    transform: translate(-50%, -50%) scale(1.15);
+    box-shadow: 0 0 15px rgba(40, 167, 69, 0.6);
+}
