@@ -1,4 +1,4 @@
-from flask import Flask,render_template
+from flask import Flask,render_template,jsonify,request
 
 app = Flask(__name__)
 
@@ -31,6 +31,22 @@ def service():
 @app.route('/acount/<name>')
 def profile(name):
     return "HELLO (name)"
+
+
+@app.route('/api/data', methods=['POST'])
+def receive_data():
+    data = request.get_json()  # get JSON from request
+    
+    name = data.get('name')
+    age = data.get('age')
+    city = data.get('city')
+
+    print(name, age, city)
+
+    return jsonify({
+        "status": "success",
+        "message": "Data received"
+    })
 
 if __name__ == "__main__":
     app.run(debug=True)

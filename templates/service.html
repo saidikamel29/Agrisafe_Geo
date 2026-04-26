@@ -425,22 +425,8 @@ function saveAllData() {
     const jsonString = JSON.stringify(dataToSave, null, 2);
     alert("تم جمع جميع المعلومات بنجاح!\n\n" + jsonString + "\n\n(راجع الـ Console لرؤية البيانات أو إرسالها إلى بايثون)");
 
-    // إرسال البيانات إلى خادم Flask
-    fetch('http://127.0.0.1:5000/api/save', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(dataToSave)
-    })
-    .then(res => res.json())
-    .then(data => {
-        console.log('Server response:', data);
-        alert(data.message || "تم إرسال البيانات بنجاح إلى قاعدة البيانات!");
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert("حدث خطأ أثناء الإرسال. تأكد من تشغيل سيرفر بايثون.");
-    });
-}
+
+
 
 // OUTSIDE CLICK
 window.onclick = function(event) {
@@ -592,6 +578,7 @@ choix.addEventListener("change", () => {
     }
 });
 </script>
+
 
 </body>
 </html>
