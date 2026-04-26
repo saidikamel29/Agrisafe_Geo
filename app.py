@@ -17,6 +17,11 @@ def aboutus():
 
     return render_template('aboutus.html')
 
+@app.route('/media')
+def media():
+
+    return render_template('media.html')
+
 @app.route('/service')
 def service():
 

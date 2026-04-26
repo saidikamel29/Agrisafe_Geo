@@ -5,12 +5,71 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agrisafe Geo - Services</title>
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="cssservise.css">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Leaflet -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet-draw/dist/leaflet.draw.css">
+    <!-- CSS -->
+     <link rel="stylesheet" href="{{ url_for('static', filename='css/cssservise.css') }}">
+
+    <!-- OpenLayers -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v8.2.0/ol.css">
+    <script src="https://cdn.jsdelivr.net/npm/ol@v8.2.0/dist/ol.js"></script>
+
+    <style>
+        /* Tooltip for area */
+        .tooltip-measure {
+            opacity: 1;
+            font-weight: bold;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            text-decoration: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        /* Professional Stepper & Buttons */
+        .step-box {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: all 0.3s;
+            cursor: default;
+        }
+        .active-step {
+            background: #198754 !important; /* Bootstrap success green */
+            color: white !important;
+            box-shadow: 0 4px 10px rgba(25, 135, 84, 0.4);
+        }
+        .completed-step {
+            background: #d1e7dd !important; /* Light green */
+            color: #0f5132 !important;
+            border: 1px solid #badbcc;
+        }
+        .disabled-step {
+            background: #f8f9fa !important;
+            color: #adb5bd !important;
+            border: 1px solid #e9ecef;
+        }
+        .btn-next {
+            background-color: #0b3d2e;
+            color: white;
+            border-radius: 25px;
+            padding: 12px 20px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .btn-next:hover {
+            background-color: #145c44;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(11, 61, 46, 0.3);
+        }
+        .form-floating label {
+            color: #6c757d;
+        }
+    </style>
 </head>
 
 <body>
@@ -18,128 +77,157 @@
 <!-- NAVBAR -->
 <header class="navbar">
     <div class="logo">Agrisafe Geo 🌱</div>
-
     <nav>
-        <a href="about.html" class="nav-btn">About Us</a>
-            <a href="service.html" class="nav-btn active">Service</a>
-            <a href="media.html" class="nav-btn">Media</a>
-            <a href="conect.html" class="nav-btn ">Connect With Us</a>
+       <a href="{{ url_for('aboutus') }}" class="nav-btn ">About Us</a>
+       <a href="{{ url_for('service') }}" class="nav-btn active">Service</a>
+       <a href="{{ url_for('media') }}" class="nav-btn">Media</a>
+       <a href="{{ url_for('conect') }}" class="nav-btn">Connect With Us</a>
+
     </nav>
 </header>
 
 <!-- SERVICES -->
-<section class="services">
-
-    <h1>Our Services</h1>
-
-    <div class="service-boxes">
-
-        <div class="box" id="registerBox">
-            📄 Insurance Registration
+<section class="services container text-center py-5">
+    <h1 class="mb-5 display-4 fw-bold">Our Services</h1>
+    <div class="row justify-content-center gap-4">
+        <div class="col-md-4 box shadow-sm p-4" id="registerBox">
+            <h4 class="mb-0">📄 Insurance Registration</h4>
         </div>
-
-        <div class="box" id="reportBox">
-            🚨 Damage Report
+        <div class="col-md-4 box shadow-sm p-4" id="reportBox">
+            <h4 class="mb-0">🚨 Damage Report</h4>
         </div>
-
     </div>
-
 </section>
 
 <!-- 🔵 REGISTER MODAL -->
 <div id="registerModal" class="modal">
-    <div class="modal-content">
-
-        <span class="close" onclick="closeRegister()">&times;</span>
-
-        <h2>Insurance Registration</h2>
+    <div class="modal-content shadow">
+        <span class="close-custom text-danger" onclick="closeRegister()">&times;</span>
+        <h2 class="mb-4 text-center">Insurance Registration</h2>
 
         <!-- STEPS -->
-        <div class="steps">
-            <div class="step-box" onclick="showSection('farmer')">👤 Farmer</div>
-            <div class="step-box" onclick="showSection('warranty')">🌾 Field</div>
-            <div class="step-box" onclick="extraAction()">⚙️ drawing field boundaries</div>
+        <div class="steps d-flex justify-content-between mb-4 gap-2">
+            <div class="step-box active-step" id="step1">1. Farmer</div>
+            <div class="step-box disabled-step" id="step2">2. Field</div>
+            <div class="step-box disabled-step" id="step3">3. Map</div>
         </div>
 
         <!-- FARMER -->
         <div id="farmer" class="form-section">
-            <h3>Farmer Information</h3>
-            <input type="text" placeholder="Full Name">
-            <input type="text" placeholder="National ID">
-            <input type="date" placeholder="date of birth">
-            <input type="text" placeholder="place of birth">
-            <input type="text" placeholder="id culture">
-            <button>Send</button>
+            <h5 class="mb-3 text-secondary border-bottom pb-2">Farmer Information</h5>
+            <div class="form-floating mb-2">
+                <input type="text" id="farmer_name" class="form-control" placeholder="Full Name" required>
+                <label>Full Name *</label>
+            </div>
+            <div class="form-floating mb-2">
+                <input type="text" id="national_id" class="form-control" placeholder="National ID" required>
+                <label>National ID *</label>
+            </div>
+            <div class="form-floating mb-2">
+                <input type="date" id="dob" class="form-control" placeholder="Date of Birth" required>
+                <label>Date of Birth *</label>
+            </div>
+            <div class="form-floating mb-2">
+                <input type="text" id="pob" class="form-control" placeholder="Place of Birth">
+                <label>Place of Birth</label>
+            </div>
+            <div class="form-floating mb-4">
+                <input type="text" id="id_culture" class="form-control" placeholder="ID Culture">
+                <label>ID Culture</label>
+            </div>
+            <button class="btn btn-next w-100" onclick="validateFarmerAndNext()">Next Step: Field Info ➔</button>
         </div>
 
         <!-- FIELD -->
-        <div id="warranty" class="form-section">
-            <h3>warranty Information</h3>
-            <div class="box">
-    <h3>Choisissez votre activité</h3>
+        <div id="warranty" class="form-section" style="display: none;">
+            <h5 class="mb-3 text-secondary border-bottom pb-2">Warranty Information</h5>
+            <div class="p-3 bg-light rounded border mb-4 shadow-sm">
+                <label class="form-label fw-bold text-dark">Choisissez votre activité *</label>
+                <select id="type" class="form-select mb-3 shadow-none border-secondary">
+                    <option value="">-- Choisir type --</option>
+                    <option value="plantation">Plantation</option>
+                    <option value="culture_herbacees">Culture herbacées</option>
+                    <option value="culture_permanentes">Culture permanentes</option>
+                </select>
+                <select id="category" class="form-select mb-3 shadow-none border-secondary" disabled>
+                    <option value="">-- Choisir catégorie --</option>
+                </select>
+                <select id="choix" class="form-select mb-3 shadow-none border-secondary" disabled>
+                    <option value="">-- Choisir --</option>
+                </select>
+                <div id="result" class="mt-2"></div>
+            </div>
+            <div class="d-flex gap-2">
+                <button class="btn btn-outline-secondary w-50 rounded-pill fw-bold" onclick="goBack('farmer', 1)">⬅ Back</button>
+                <button class="btn btn-next w-50" onclick="validateFieldAndNext()">Next: Draw Map ➔</button>
+            </div>
+        </div>
 
-    <!-- Type -->
-    <select id="type">
-        <option value="">-- Choisir type --</option>
-        <option value="plantation">Plantation</option>
-        <option value="culture_herbacees">culture herbacées</option>
-        <option value="culture_permanentes">culture permanentes</option>
-    </select>
-
-    <!-- Category -->
-    <select id="category" disabled>
-        <option value="">-- Choisir catégorie --</option>
-    </select>
-
-    <!-- Choix final -->
-    <select id="choix" disabled>
-        <option value="">-- Choisir --</option>
-    </select>
-    <!-- Result -->
-    <div id="result"></div>
+        <!-- SUMMARY & SUBMIT -->
+        <div id="summary" class="form-section" style="display: none;">
+            <div class="text-center mb-4 mt-3">
+                <h1 class="display-1 text-success mb-3" style="font-size: 4rem;">✅</h1>
+                <h4 class="text-success fw-bold">All Steps Completed!</h4>
+                <p class="text-muted">Information and map boundaries are ready.</p>
+            </div>
+            <button class="btn btn-success w-100 fw-bold p-3 rounded-pill shadow-sm" style="font-size: 1.1rem;" onclick="saveAllData()">🚀 Submit & Save All Data</button>
+            <button class="btn btn-outline-secondary w-100 mt-2 rounded-pill fw-bold" onclick="goBack('warranty', 2)">⬅ Edit Field Info</button>
+        </div>
+    </div>
 </div>
 
 <!-- 🗺️ FULLSCREEN MAP -->
 <div id="mapModal" class="map-modal">
+    <!-- Professional Centered Search Bar -->
+    <div class="position-absolute top-0 start-50 translate-middle-x mt-4 shadow-lg bg-white rounded-pill d-flex align-items-center" style="z-index: 1000; width: 450px; max-width: 90vw; padding: 6px;">
+        <input type="text" id="mapSearchInput" class="form-control border-0 bg-transparent shadow-none ms-2" placeholder="🔍 ابحث عن مكان أو مدينة..." style="box-shadow: none; outline: none; font-size: 1.1rem;" onkeypress="if(event.key === 'Enter') searchLocation()">
+        <button class="btn btn-success rounded-pill px-4 py-2 fw-bold" onclick="searchLocation()">بحث</button>
+    </div>
 
-    <button class="close-map" onclick="closeMap()">X</button>
+    <!-- Close Button -->
+    <button class="btn btn-danger close-map shadow-sm rounded-pill px-4 fw-bold" onclick="closeMap()">❌ إغلاق</button>
+    
+    <!-- Clear Drawing Button -->
+    <button class="btn btn-warning shadow-lg position-absolute rounded-pill px-4 py-2 fw-bold" style="bottom: 20px; left: 20px; z-index: 1000; color: #000;" onclick="clearDrawing()">🗑️ إعادة الرسم</button>
+
+    <!-- Info bar for showing area (Bottom) -->
+    <div id="map-info" class="position-absolute bottom-0 start-50 translate-middle-x mb-4 px-4 py-2 bg-dark text-white rounded-pill shadow-lg d-flex align-items-center gap-2" style="z-index: 1000; display: none; font-size: 1.2rem; border: 2px solid #28a745;">
+        <span>المساحة:</span>
+        <span id="area-output" class="text-warning fw-bold fs-4">0</span>
+    </div>
 
     <div id="map"></div>
-
-    <button class="save-btn" onclick="saveField()">OK</button>
-
+    <button class="btn btn-success save-btn shadow-lg rounded-pill px-4 py-2 fw-bold" onclick="saveField()">✅ حفظ الحدود</button>
 </div>
 
 <!-- 🔴 REPORT MODAL -->
 <div id="reportModal" class="modal">
-    <div class="modal-content">
-
-        <span class="close" onclick="closeReport()">&times;</span>
-
-        <h2>Report Issue</h2>
-
-        <input type="file">
-        <input type="date">
-        <textarea placeholder="Describe problem"></textarea>
-
-        <button>Send</button>
-
+    <div class="modal-content shadow">
+        <span class="close-custom text-danger" onclick="closeReport()">&times;</span>
+        <h2 class="mb-4 text-center">Report Issue</h2>
+        <input type="file" class="form-control mb-2">
+        <input type="date" class="form-control mb-2">
+        <textarea class="form-control mb-3" rows="4" placeholder="Describe problem"></textarea>
+        <button class="btn btn-danger w-100">Send Report</button>
     </div>
 </div>
 
-<!-- Leaflet JS -->
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<script src="https://unpkg.com/leaflet-draw/dist/leaflet.draw.js"></script>
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <!-- JS -->
 <script>
-
 let map;
-let drawnItems;
+let draw;
+let source;
+let vector;
+let currentPolygonCoords = [];
+let currentPolygonArea = 0;
 
 // OPEN MODALS
 document.getElementById("registerBox").onclick = function () {
     document.getElementById("registerModal").style.display = "block";
+    showSection('farmer');
 }
 
 document.getElementById("reportBox").onclick = function () {
@@ -157,232 +245,307 @@ function closeReport() {
 
 // SWITCH SECTIONS
 function showSection(id) {
-
     document.querySelectorAll(".form-section").forEach(sec => {
         sec.style.display = "none";
     });
-
-    document.getElementById(id).style.display = "block";
+    let section = document.getElementById(id);
+    if(section) section.style.display = "block";
 }
 
-// NEXT STEP → OPEN MAP
-function extraAction() {
+// VALIDATION & STEPPER LOGIC
+function updateStepper(stepNumber) {
+    document.getElementById('step1').className = "step-box " + (stepNumber === 1 ? "active-step" : "completed-step");
+    document.getElementById('step2').className = "step-box " + (stepNumber === 2 ? "active-step" : (stepNumber > 2 ? "completed-step" : "disabled-step"));
+    document.getElementById('step3').className = "step-box " + (stepNumber === 3 ? "active-step" : "disabled-step");
+}
 
+function validateFarmerAndNext() {
+    let name = document.getElementById('farmer_name').value.trim();
+    let nid = document.getElementById('national_id').value.trim();
+    let dob = document.getElementById('dob').value;
+    
+    if (!name || !nid || !dob) {
+        alert("⚠️ Please fill in all required fields (Name, National ID, Date of Birth).");
+        return;
+    }
+    showSection('warranty');
+    updateStepper(2);
+}
+
+function validateFieldAndNext() {
+    let type = document.getElementById('type').value;
+    let category = document.getElementById('category').value;
+    let choix = document.getElementById('choix').value;
+    
+    if (!type || !category || !choix || type === "-- Choisir type --" || category === "-- Choisir catégorie --" || choix === "-- Choisir --") {
+        alert("⚠️ Please completely select your field activity before drawing the map.");
+        return;
+    }
+    updateStepper(3);
+    extraAction();
+}
+
+function goBack(sectionId, stepNumber) {
+    showSection(sectionId);
+    updateStepper(stepNumber);
+}
+
+// NEXT STEP → OPEN MAP WITH OPENLAYERS
+function extraAction() {
     document.getElementById("registerModal").style.display = "none";
     document.getElementById("mapModal").style.display = "block";
 
     if (!map) {
-
-        map = L.map('map').setView([35.7, -0.6], 10);
-
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: 'Map'
-        }).addTo(map);
-
-        drawnItems = new L.FeatureGroup();
-        map.addLayer(drawnItems);
-
-        let drawControl = new L.Control.Draw({
-            draw: {
-                polygon: true,
-                rectangle: true
-            },
-            edit: {
-                featureGroup: drawnItems
-            }
+        source = new ol.source.Vector({wrapX: false});
+        vector = new ol.layer.Vector({
+            source: source,
+            style: new ol.style.Style({
+                fill: new ol.style.Fill({
+                    color: 'rgba(40, 167, 69, 0.4)'
+                }),
+                stroke: new ol.style.Stroke({
+                    color: '#28a745',
+                    width: 3
+                }),
+                image: new ol.style.Circle({
+                    radius: 7,
+                    fill: new ol.style.Fill({ color: '#28a745' })
+                })
+            })
         });
 
-        map.addControl(drawControl);
-
-        map.on('draw:created', function (e) {
-            let layer = e.layer;
-            drawnItems.addLayer(layer);
-
-            console.log("Field coords:", layer.getLatLngs());
+        // Initialize Map
+        map = new ol.Map({
+            target: 'map',
+            layers: [
+                new ol.layer.Tile({
+                    source: new ol.source.OSM()
+                }),
+                vector
+            ],
+            view: new ol.View({
+                center: ol.proj.fromLonLat([-0.6, 35.7]), // Set default center
+                zoom: 10
+            })
         });
+
+        addInteraction();
     }
 
     setTimeout(() => {
-        map.invalidateSize();
+        map.updateSize();
     }, 200);
+}
+
+// Add Drawing Interaction (Polygon)
+function addInteraction() {
+    draw = new ol.interaction.Draw({
+        source: source,
+        type: 'Polygon'
+    });
+    
+    map.addInteraction(draw);
+
+    draw.on('drawstart', function() {
+        source.clear(); // Clear previous polygon to allow only one boundary
+        document.getElementById("map-info").style.display = "none";
+    });
+
+    draw.on('drawend', function(e) {
+        let feature = e.feature;
+        let geometry = feature.getGeometry();
+        
+        // Calculate Area in square meters using ol.sphere
+        let area = ol.sphere.getArea(geometry);
+        currentPolygonArea = Math.round(area * 100) / 100;
+        
+        // Convert to EPSG:4326 to save standard Lat/Lon coordinates
+        let clonedGeometry = geometry.clone().transform('EPSG:3857', 'EPSG:4326');
+        currentPolygonCoords = clonedGeometry.getCoordinates();
+        
+        // Display area
+        let displayArea = currentPolygonArea;
+        let unit = 'm²';
+        if (currentPolygonArea > 10000) {
+            displayArea = (Math.round(currentPolygonArea / 10000 * 100) / 100);
+            unit = 'hectares';
+        }
+        
+        document.getElementById("area-output").innerText = displayArea + ' ' + unit;
+        document.getElementById("map-info").style.display = "block";
+        
+        console.log("===============================");
+        console.log("✅ إحداثيات حدود الأرض (Polygon):", currentPolygonCoords);
+        console.log("✅ المساحة المحسوبة:", currentPolygonArea + " m²");
+        console.log("===============================");
+    });
 }
 
 // CLOSE MAP
 function closeMap() {
     document.getElementById("mapModal").style.display = "none";
+    document.getElementById("registerModal").style.display = "block"; // Return to register modal
 }
 
 // SAVE FIELD
 function saveField() {
-    alert("Field saved successfully!");
+    if (currentPolygonCoords.length === 0) {
+        alert("يرجى رسم حدود الأرض أولاً على الخريطة.");
+        return;
+    }
     closeMap();
+    showSection('summary');
+    updateStepper(3); // Keep Map step active as we are in the summary step now
+}
+
+// SAVE ALL DATA FOR PYTHON BACKEND
+function saveAllData() {
+    const dataToSave = {
+        farmer: {
+            fullName: document.getElementById('farmer_name').value,
+            nationalId: document.getElementById('national_id').value,
+            dob: document.getElementById('dob').value,
+            pob: document.getElementById('pob').value,
+            idCulture: document.getElementById('id_culture').value
+        },
+        field: {
+            type: document.getElementById('type').value,
+            category: document.getElementById('category').value,
+            choix: document.getElementById('choix').value
+        },
+        map: {
+            coordinates: currentPolygonCoords,
+            area: currentPolygonArea
+        }
+    };
+
+    console.log("📦 Data ready for Python:", dataToSave);
+    
+    // Convert to JSON string to show the user
+    const jsonString = JSON.stringify(dataToSave, null, 2);
+    alert("تم جمع جميع المعلومات بنجاح!\n\n" + jsonString + "\n\n(راجع الـ Console لرؤية البيانات أو إرسالها إلى بايثون)");
+
+    // إرسال البيانات إلى خادم Flask
+    fetch('http://127.0.0.1:5000/api/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dataToSave)
+    })
+    .then(res => res.json())
+    .then(data => {
+        console.log('Server response:', data);
+        alert(data.message || "تم إرسال البيانات بنجاح إلى قاعدة البيانات!");
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert("حدث خطأ أثناء الإرسال. تأكد من تشغيل سيرفر بايثون.");
+    });
 }
 
 // OUTSIDE CLICK
 window.onclick = function(event) {
-
     let reg = document.getElementById("registerModal");
     let rep = document.getElementById("reportModal");
-
     if (event.target == reg) reg.style.display = "none";
     if (event.target == rep) rep.style.display = "none";
 }
+
+// Search Location Function
+async function searchLocation() {
+    const query = document.getElementById('mapSearchInput').value;
+    if (!query) return;
+
+    try {
+        // Search using Nominatim OpenStreetMap API
+        const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`);
+        const searchData = await response.json();
+        
+        if (searchData && searchData.length > 0) {
+            const lon = parseFloat(searchData[0].lon);
+            const lat = parseFloat(searchData[0].lat);
+            
+            // Move map to the searched location
+            map.getView().animate({
+                center: ol.proj.fromLonLat([lon, lat]),
+                zoom: 14,
+                duration: 1000
+            });
+        } else {
+            alert("لم يتم العثور على المكان. جرب اسماً آخر.");
+        }
+    } catch (error) {
+        console.error("Error searching location:", error);
+        alert("حدث خطأ أثناء البحث.");
+    }
+}
+
+// Clear Drawing Function
+function clearDrawing() {
+    if (source) {
+        source.clear(); // Remove all features from map
+    }
+    currentPolygonCoords = [];
+    currentPolygonArea = 0;
+    document.getElementById("map-info").style.display = "none";
+}
+
+// DATA OBJECT
 const data = {
     plantation: {
        olivier: {
-            olivier_en_masse: {
-                text: "Olivier en masse",
-                info: "Superficie: 1ha minimum - Besoin d'irrigation moyenne"
-            },
-            olivier_isoles: {
-                text: "Olivier isolés",
-                info: "Superficie: 2ha - Climat chaud nécessaire"
-            },
-            olivier_en_rapport: {
-                text: "Olivier en rapport",
-                info: "Superficie: 2ha - Climat chaud nécessaire"
-            }
+            olivier_en_masse: { text: "Olivier en masse", info: "Superficie: 1ha minimum - Besoin d'irrigation moyenne" },
+            olivier_isoles: { text: "Olivier isolés", info: "Superficie: 2ha - Climat chaud nécessaire" },
+            olivier_en_rapport: { text: "Olivier en rapport", info: "Superficie: 2ha - Climat chaud nécessaire" }
         },
         agrumes: {
-            orangers: {
-                text: "Orangers",
-                info: "Superficie: 5ha - Culture saisonnière"
-            },
-            clementiniers: {
-                text: "Clémentiniers",
-                info: "Superficie: 5ha - Culture saisonnière"
-            },
-            mandariniers: {
-                text: "Mandariniers",
-                info: "Superficie: 5ha - Culture saisonnière"
-            },
-            citronniers: {
-                text: "Citronniers",
-                info: "Superficie: 5ha - Culture saisonnière"
-            },
-            pomelos: {
-                text: "Pomelos",
-                info: "Superficie: 5ha - Culture saisonnière"
-            }
+            orangers: { text: "Orangers", info: "Superficie: 5ha - Culture saisonnière" },
+            clementiniers: { text: "Clémentiniers", info: "Superficie: 5ha - Culture saisonnière" },
+            mandariniers: { text: "Mandariniers", info: "Superficie: 5ha - Culture saisonnière" },
+            citronniers: { text: "Citronniers", info: "Superficie: 5ha - Culture saisonnière" },
+            pomelos: { text: "Pomelos", info: "Superficie: 5ha - Culture saisonnière" }
         },
         especes_a_noyaux_et_a_pepins: {
-            pommiers: {
-                text: "Pommiers",
-                info: "Superficie: 3ha - Climat tempéré"
-            },
-            poiriers: {
-                text: "Poiriers",
-                info: "Superficie: 3ha - Climat tempéré"
-            },
-            pechers: {
-                text: "Pêchers",
-                info: "Superficie: 2ha - Climat doux"
-            },
-            abricotiers: {
-                text: "Abricotiers",
-                info: "Superficie: 2ha - Climat chaud"
-            }
+            pommiers: { text: "Pommiers", info: "Superficie: 3ha - Climat tempéré" },
+            poiriers: { text: "Poiriers", info: "Superficie: 3ha - Climat tempéré" },
+            pechers: { text: "Pêchers", info: "Superficie: 2ha - Climat doux" },
+            abricotiers: { text: "Abricotiers", info: "Superficie: 2ha - Climat chaud" }
         },     
     },
     culture_herbacees: {
         cereales_dhiver: {
-            ble: {
-                text: "Blé",
-                info: "Superficie: 10ha - Culture saisonnière"
-            },
-            orge: {
-                text: "Orge",
-                info: "Superficie: 8ha - Résistant à la sécheresse"
-            },
-           tendre: {
-                text: "tendre",
-                info: "Superficie: 8ha - Résistant à la sécheresse"
-            },
-           ble_dure: {
-                text: "ble_dur",
-                info: "Superficie: 8ha - Résistant à la sécheresse"
-            },
-            avoine: {
-                text: "avoine",
-                info: "Superficie: 8ha - Résistant à la sécheresse"
-            },
-            triticale: {
-                text: "triticale",
-                info: "Superficie: 8ha - Résistant à la sécheresse"
-            },
-
+            ble: { text: "Blé", info: "Superficie: 10ha - Culture saisonnière" },
+            orge: { text: "Orge", info: "Superficie: 8ha - Résistant à la sécheresse" },
+           tendre: { text: "tendre", info: "Superficie: 8ha - Résistant à la sécheresse" },
+           ble_dure: { text: "ble_dur", info: "Superficie: 8ha - Résistant à la sécheresse" },
+            avoine: { text: "avoine", info: "Superficie: 8ha - Résistant à la sécheresse" },
+            triticale: { text: "triticale", info: "Superficie: 8ha - Résistant à la sécheresse" },
         },
         legumineuses: {
-            pois_chiche: {
-                text: "Pois chiche",
-                info: "Superficie: 5ha - Besoin modéré en eau"
-            },
-            lentilles: {
-                text: "Lentilles",
-                info: "Superficie: 4ha - Climat sec"
-            },
-             freves_feveroles: {
-                text: "reves_feveroles",
-                info: "Superficie: 4ha - Climat sec"
-            },
-             pois_secs: {
-                text: "pois_secs",
-                info: "Superficie: 4ha - Climat sec"
-            },
-             haricots_secs: {
-                text: "Lentilles",
-                info: "Superficie: 4ha - Climat sec"
-            },
-             gesses_et_gurfalas: {
-                text: "gesses_et_gurfalas",
-                info: "Superficie: 4ha - Climat sec"
-            },
+            pois_chiche: { text: "Pois chiche", info: "Superficie: 5ha - Besoin modéré en eau" },
+            lentilles: { text: "Lentilles", info: "Superficie: 4ha - Climat sec" },
+             freves_feveroles: { text: "reves_feveroles", info: "Superficie: 4ha - Climat sec" },
+             pois_secs: { text: "pois_secs", info: "Superficie: 4ha - Climat sec" },
+             haricots_secs: { text: "Lentilles", info: "Superficie: 4ha - Climat sec" },
+             gesses_et_gurfalas: { text: "gesses_et_gurfalas", info: "Superficie: 4ha - Climat sec" },
         },
         cereales_dete: {
-            mais: {
-                text: "mais",
-                info: "Superficie: 5ha - Besoin modéré en eau"
-            },
-            sorgho: {
-                text: "sorgo",
-                info: "Superficie: 4ha - Climat sec"
-            },
+            mais: { text: "mais", info: "Superficie: 5ha - Besoin modéré en eau" },
+            sorgho: { text: "sorgo", info: "Superficie: 4ha - Climat sec" },
         },
         cultures_industrielles:{
-            tomates: {
-                text: "tomates",
-                info: "Superficie: 5ha - Besoin modéré en eau"
-            },
-            tabac: {
-                text: "tabac",
-                info: "Superficie: 4ha - Climat sec"
-            },
-            arachides: {
-                text: "arachides",
-                info: "Superficie: 4ha - Climat sec"
-            },
-            autre: {
-                text: "autre",
-                info: "Superficie: 4ha - Climat sec"
-            },
+            tomates: { text: "tomates", info: "Superficie: 5ha - Besoin modéré en eau" },
+            tabac: { text: "tabac", info: "Superficie: 4ha - Climat sec" },
+            arachides: { text: "arachides", info: "Superficie: 4ha - Climat sec" },
+            autre: { text: "autre", info: "Superficie: 4ha - Climat sec" },
          },
     },
     culture_permanentes: {
         vigne: {
-            raisin_table: {
-                text: "Raisin de table",
-                info: "Superficie: 3ha - Climat méditerranéen"
-            },
-            raisin_vin: {
-                text: "Raisin pour vin",
-                info: "Superficie: 4ha - Culture durable"
-            },
+            raisin_table: { text: "Raisin de table", info: "Superficie: 3ha - Climat méditerranéen" },
+            raisin_vin: { text: "Raisin pour vin", info: "Superficie: 4ha - Culture durable" },
         },
         prairies: {
-            prairies_naturelles: {
-                text: "prairies_naturelles",
-                info: "Superficie: 5ha - Climat saharien"
-            },
+            prairies_naturelles: { text: "prairies_naturelles", info: "Superficie: 5ha - Climat saharien" },
         },
     },
 };
@@ -399,7 +562,6 @@ type.addEventListener("change", () => {
 
     if (type.value) {
         category.disabled = false;
-
         for (let cat in data[type.value]) {
             category.innerHTML += `<option value="${cat}">${cat}</option>`;
         }
@@ -408,10 +570,8 @@ type.addEventListener("change", () => {
 
 category.addEventListener("change", () => {
     choix.innerHTML = "<option>-- Choisir --</option>";
-
     if (category.value) {
         choix.disabled = false;
-
         let items = data[type.value][category.value];
         for (let item in items) {
             choix.innerHTML += `<option value="${item}">${items[item].text}</option>`;
@@ -422,11 +582,12 @@ category.addEventListener("change", () => {
 choix.addEventListener("change", () => {
     if (choix.value) {
         let info = data[type.value][category.value][choix.value].info;
-
         result.innerHTML = `
-            <h4>اختيارك:</h4>
-            <p>${choix.options[choix.selectedIndex].text}</p>
-            <p>${info}</p>
+            <div class="alert alert-success mt-2">
+                <h5 class="alert-heading">اختيارك:</h5>
+                <p class="mb-1 fw-bold">${choix.options[choix.selectedIndex].text}</p>
+                <p class="mb-0 text-muted small">${info}</p>
+            </div>
         `;
     }
 });

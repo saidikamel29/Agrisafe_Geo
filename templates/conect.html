@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agrisafe Geo</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/cssconect.css') }}">
+     <link rel="stylesheet" href="{{ url_for('static', filename='css/cssconect.css') }}">
     
 </head>
 <body>
@@ -15,9 +14,9 @@
         <div class="logo">Agrisafe Geo 🌱</div>
 
         <nav>
-           <a href="{{ url_for('aboutus') }}" class="nav-btn">About Us</a>
+           <a href="{{ url_for('aboutus') }}" class="nav-btn active">About Us</a>
             <a href="{{ url_for('service') }}" class="nav-btn">Service</a>
-          
+            <a href="{{ url_for('media') }}" class="nav-btn">Media</a>
             <a href="{{ url_for('conect') }}" class="nav-btn active">Connect With Us</a>
         </nav>
     </header>
